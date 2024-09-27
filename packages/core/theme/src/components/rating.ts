@@ -12,6 +12,7 @@ const rating = tv({
     icon: [],
     helperWrapper: [],
     description: ["text-tiny", "text-foreground-400"],
+    errorMessage: ["text-tiny", "text-red-400"],
   },
   variants: {
     size: {

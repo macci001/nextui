@@ -11,7 +11,7 @@ interface RatingIconProps {
 export const RatingIcon = ({offset, icon, fillColor}: RatingIconProps) => {
   const id = Math.random().toString(36);
   const context = useRatingContext();
-  const {slots, isRTL, classNames, opacity, selectedOpacity} = context;
+  const {slots, isRTL, classNames, opacity, activeOpacity} = context;
 
   icon = icon ?? context.icon;
   fillColor = fillColor ?? context.fillColor;
@@ -25,9 +25,9 @@ export const RatingIcon = ({offset, icon, fillColor}: RatingIconProps) => {
           <stop
             offset={offset}
             stopColor={fillColor}
-            stopOpacity={isRTL ? opacity : selectedOpacity}
+            stopOpacity={isRTL ? opacity : activeOpacity}
           />
-          <stop stopColor={fillColor} stopOpacity={isRTL ? selectedOpacity : opacity} />
+          <stop stopColor={fillColor} stopOpacity={isRTL ? activeOpacity : opacity} />
         </linearGradient>
       </defs>
       <g fill={`url(#${"grad" + id})`} stroke={strokeColor}>

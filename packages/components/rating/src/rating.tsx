@@ -16,7 +16,9 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     children,
     length,
     hasHelper,
+    isInvalid,
     description,
+    errorMessage,
     setRatingValue,
     getBaseProps,
     getMainWrapperProps,
@@ -24,6 +26,7 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getInputProps,
     getHelperWrapperProps,
     getDescriptionProps,
+    getErrorMessageProps,
     value,
     ratingValue,
   } = context;
@@ -46,13 +49,28 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     if (!hasHelper) {
       return null;
     }
+    if (isInvalid && !!errorMessage) {
+      return (
+        <div {...getHelperWrapperProps()}>
+          <div {...getErrorMessageProps()}>{errorMessage}</div>
+        </div>
+      );
+    }
 
     return (
       <div {...getHelperWrapperProps()}>
         <div {...getDescriptionProps()}>{description}</div>
       </div>
     );
-  }, [hasHelper, description, getHelperWrapperProps, getDescriptionProps]);
+  }, [
+    hasHelper,
+    isInvalid,
+    description,
+    errorMessage,
+    getHelperWrapperProps,
+    getDescriptionProps,
+    getErrorMessageProps,
+  ]);
 
   const Input = useMemo(
     () => (

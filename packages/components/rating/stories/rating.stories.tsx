@@ -194,6 +194,15 @@ export const WithDescription = {
   },
 };
 
+export const WithErrorMessage = {
+  render: Template,
+  args: {
+    ...defaultProps,
+    errorMessage: "Error Message for the rating component.",
+    isInvalid: true,
+  },
+};
+
 export const Controlled = {
   render: ControlledTemplate,
   args: {

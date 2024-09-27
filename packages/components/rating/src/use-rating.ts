@@ -48,13 +48,13 @@ interface Props extends HTMLNextUIProps<"div"> {
    */
   strokeColor?: string;
   /**
-   * Opacity when the icon is not hovered/selected. By default, opacity will be 0.2
+   * Opacity when the icon is not active. By default, opacity will be 0.2
    */
   opacity?: number;
   /**
-   * Opacity when the icon is hovered/selected. By default, selectedOpacity will be 1
+   * Opacity when the icon is active. By default, selectedOpacity will be 1
    */
-  selectedOpacity?: number;
+  activeOpacity?: number;
   /**
    * Precision fraction round-off for Rating value.
    */
@@ -76,6 +76,10 @@ interface Props extends HTMLNextUIProps<"div"> {
    */
   disableAnimation?: boolean;
   /**
+   * Error messgae
+   */
+  errorMessage?: React.ReactNode;
+  /**
    * Classname or List of classes to change the classNames of the element.
    * if `className` is passed, it will be added to the base slot.
    *
@@ -88,7 +92,8 @@ interface Props extends HTMLNextUIProps<"div"> {
    *    iconSegement: "icon-segment-classes",
    *    icon: "icon-classes",
    *    helperWrapper: "helper-wrapper-classes",
-   *    description: "description-classes"
+   *    description: "description-classes",
+   *    errorMessage: "error-message-classes",
    * }} />
    * ```
    */
@@ -110,13 +115,13 @@ export function useRating(originalProps: UseRatingProps) {
     baseRef,
     as,
     className,
-    length,
+    length = 5,
     classNames,
     strokeColor,
     precision = 1,
     fillColor = "gold",
     opacity = 0.2,
-    selectedOpacity = 1,
+    activeOpacity = 1,
     children = null,
     isSingleSelection = false,
     icon = StarIcon({}),
@@ -166,7 +171,9 @@ export function useRating(originalProps: UseRatingProps) {
   );
 
   const description = props.description;
-  const hasHelper = !!description;
+  const isInvalid = props.isInvalid ?? false;
+  const errorMessage = props.errorMessage;
+  const hasHelper = !!description || !!errorMessage;
 
   const {hoverProps, isHovered: isIconWrapperHovered} = useHover({isDisabled});
   const shouldConsiderHover = Math.floor(1 / precision) == 1 / precision;
@@ -199,12 +206,13 @@ export function useRating(originalProps: UseRatingProps) {
         ...mergeProps(props),
         "data-slot": "base",
         "data-disabled": dataAttr(isDisabled),
-        "data-invalid": dataAttr(originalProps?.isInvalid),
+        "data-invalid": dataAttr(isInvalid),
         "data-required": dataAttr(originalProps?.isRequired),
         "data-readonly": dataAttr(originalProps?.isReadOnly),
+        "data-hovered": dataAttr(isIconWrapperHovered),
       };
     },
-    [baseDomRef, slots, baseStyles, isDisabled, originalProps],
+    [baseDomRef, slots, baseStyles, isDisabled, isInvalid, originalProps],
   );
 
   const getMainWrapperProps: PropGetter = useCallback(
@@ -226,6 +234,7 @@ export function useRating(originalProps: UseRatingProps) {
         className: slots.iconWrapper({class: clsx(classNames?.iconWrapper)}),
         ...mergeProps(props, hoverProps),
         "data-slot": "icon-wrapper",
+        "data-hover": dataAttr(isIconWrapperHovered),
       };
     },
     [iconWrapperRef, slots, hoverProps, ratingValue, setRatingValue, onMouseMoveIconWrapper],
@@ -267,6 +276,17 @@ export function useRating(originalProps: UseRatingProps) {
     [slots],
   );
 
+  const getErrorMessageProps: PropGetter = useCallback(
+    (props = {}) => {
+      return {
+        className: slots.errorMessage({class: clsx(classNames?.errorMessage)}),
+        "data-slot": "error",
+        ...props,
+      };
+    },
+    [slots],
+  );
+
   return {
     Component,
     children,
@@ -282,10 +302,12 @@ export function useRating(originalProps: UseRatingProps) {
     strokeColor,
     icon,
     hasHelper,
+    isInvalid,
     description,
+    errorMessage,
     shouldConsiderHover,
     opacity,
-    selectedOpacity,
+    activeOpacity,
     setRatingValue,
     getBaseProps,
     getMainWrapperProps,
@@ -293,6 +315,7 @@ export function useRating(originalProps: UseRatingProps) {
     getInputProps,
     getHelperWrapperProps,
     getDescriptionProps,
+    getErrorMessageProps,
     ...otherProps,
   };
 }

@@ -88,7 +88,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     >
       <RatingIcon fillColor={fillColor} icon={icon} offset={isRTL ? offsetRTL : offset} />
       <input
-        className={`absolute top-0 inset-0 opacity-0`}
+        className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
         name={name}
         type="radio"
         onBlur={onBlur}
