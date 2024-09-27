@@ -60,19 +60,33 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     value = ratingValue.hoveredValue;
   }
 
-  let offset = Number(Math.floor(value) - 1 == index);
+  const calculateOffset = (
+    value: number,
+    index: number,
+    isSingleSelection: boolean,
+    isRTL: boolean,
+  ) => {
+    if (isSingleSelection) {
+      return Number(Math.floor(value) - 1 == index);
+    }
 
-  if (!isSingleSelection) {
-    offset = Math.floor(value) > index ? 1 : 0;
-    offset = Math.floor(value) == index ? value - Math.floor(value) : offset;
-  }
+    if (Math.floor(value) > index) {
+      return Number(!isRTL);
+    }
 
-  let offsetRTL = 1 - Number(Math.floor(value) - 1 == index);
+    if (Math.floor(value) < index) {
+      return Number(isRTL);
+    }
 
-  if (!isSingleSelection) {
-    offsetRTL = Math.floor(value) > index ? 0 : 1;
-    offsetRTL = Math.floor(value) == index ? (offsetRTL = 1 - (value - Math.floor(value))) : offset;
-  }
+    if (isRTL) {
+      return 1 - (value - Math.floor(value));
+    }
+
+    return value - Math.floor(value);
+  };
+
+  const offset = calculateOffset(value, index, isSingleSelection, false);
+  const offsetRTL = calculateOffset(value, index, isSingleSelection, true);
 
   const segmentStyles = slots.iconSegment({class: clsx(classNames?.iconSegment)});
   const {isHovered, hoverProps} = useHover({});

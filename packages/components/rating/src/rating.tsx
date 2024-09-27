@@ -43,7 +43,7 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
         ))}
       </div>
     );
-  }, [children, getIconWrapperProps]);
+  }, [children, length, getIconWrapperProps]);
 
   const Helper = useMemo(() => {
     if (!hasHelper) {

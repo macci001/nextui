@@ -19,7 +19,12 @@ export const RatingIcon = ({offset, icon, fillColor}: RatingIconProps) => {
   const iconStyles = slots.icon({class: clsx(classNames?.icon)});
 
   return (
-    <svg className={iconStyles} data-slot="icon">
+    <svg
+      aria-label={`Rating icon filled to ${offset * 100}%`}
+      className={iconStyles}
+      data-slot="icon"
+      role="img"
+    >
       <defs>
         <linearGradient id={"grad" + id}>
           <stop

@@ -160,6 +160,18 @@ export const Default = {
   },
 };
 
+export const Accessibility = {
+  render: Template,
+  args: {
+    ...defaultProps,
+    length: 5,
+    "aria-label": "Rate this item",
+  },
+  parameters: {
+    a11y: {disable: false},
+  },
+};
+
 export const Required = {
   render: WithReactHookFormTemplate,
   args: {

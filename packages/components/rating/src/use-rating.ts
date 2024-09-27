@@ -76,7 +76,7 @@ interface Props extends HTMLNextUIProps<"div"> {
    */
   disableAnimation?: boolean;
   /**
-   * Error messgae
+   * Error message
    */
   errorMessage?: React.ReactNode;
   /**
@@ -129,8 +129,10 @@ export function useRating(originalProps: UseRatingProps) {
     ...otherProps
   } = props;
 
-  const {disableAnimation = globalContext?.disableAnimation ?? false, isDisabled = false} =
-    originalProps;
+  const {
+    disableAnimation = globalContext?.disableAnimation ?? false,
+    isDisabled = originalProps.isDisabled ?? false,
+  } = originalProps;
 
   const {direction} = useLocale();
   const isRTL = direction === "rtl";
@@ -176,7 +178,7 @@ export function useRating(originalProps: UseRatingProps) {
   const hasHelper = !!description || !!errorMessage;
 
   const {hoverProps, isHovered: isIconWrapperHovered} = useHover({isDisabled});
-  const shouldConsiderHover = Math.floor(1 / precision) == 1 / precision;
+  const shouldConsiderHover = Math.abs(Math.floor(1 / precision) - 1 / precision) < Number.EPSILON;
 
   const onMouseMoveIconWrapper = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!iconWrapperRef || !iconWrapperRef.current) return;
@@ -194,6 +196,7 @@ export function useRating(originalProps: UseRatingProps) {
 
     if (precisedHoverValue < updatedHoverValue)
       precisedHoverValue = precisedHoverValue + precisionValue;
+    if (precisedHoverValue > length) precisedHoverValue = length;
     setRatingValue({hoveredValue: precisedHoverValue, selectedValue: ratingValue.selectedValue});
   };
 
@@ -251,7 +254,7 @@ export function useRating(originalProps: UseRatingProps) {
         "data-slot": "input",
       };
     },
-    [domRef, ratingValue, slots, originalProps, slots, originalProps.value],
+    [domRef, ratingValue, slots, originalProps, originalProps.value],
   );
 
   const getHelperWrapperProps: PropGetter = useCallback(
