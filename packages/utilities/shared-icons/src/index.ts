@@ -33,6 +33,9 @@ export * from "./arrow-right";
 export * from "./arrow-left";
 export * from "./link";
 export * from "./selector";
+export * from "./warn";
+export * from "./error";
+export * from "./success";
 
 // sets
 export * from "./bulk";
