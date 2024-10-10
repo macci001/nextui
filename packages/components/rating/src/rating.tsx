@@ -30,6 +30,9 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getErrorMessageProps,
     value,
     ratingValue,
+    name,
+    onBlur,
+    onChange,
   } = context;
 
   const IconList = useMemo(() => {
@@ -39,19 +42,14 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
 
     return (
       <div {...getIconWrapperProps()}>
-        <RadioGroup
-          name={context.name}
-          orientation="horizontal"
-          onBlur={context.onBlur}
-          onChange={context.onChange}
-        >
+        <RadioGroup name={name} orientation="horizontal" onBlur={onBlur} onChange={onChange}>
           {Array.from(Array(length)).map((_, idx) => (
             <RatingSegment key={"segment-" + idx} index={idx} />
           ))}
         </RadioGroup>
       </div>
     );
-  }, [children, length, getIconWrapperProps]);
+  }, [children, length, getIconWrapperProps, name, onBlur, onChange]);
 
   const Helper = useMemo(() => {
     if (!hasHelper) {
