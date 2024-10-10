@@ -2,6 +2,7 @@ import {mergeRefs} from "@nextui-org/react-utils";
 import {useRef} from "react";
 import {clsx, dataAttr} from "@nextui-org/shared-utils";
 import {useHover} from "@react-aria/interactions";
+import {Radio} from "@nextui-org/radio";
 
 import {useRatingContext} from "./rating-context";
 import {RatingIcon} from "./rating-icon";
@@ -101,10 +102,10 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
       {...hoverProps}
     >
       <RatingIcon fillColor={fillColor} icon={icon} offset={isRTL ? offsetRTL : offset} />
-      <input
+      <Radio
         className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
         name={name}
-        type="radio"
+        value={index.toString()}
         onBlur={onBlur}
         onChange={onChange}
       />

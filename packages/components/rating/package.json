@@ -43,6 +43,7 @@
     "@nextui-org/shared-icons": "workspace:*",
     "@nextui-org/shared-utils": "workspace:*",
     "@nextui-org/react-utils": "workspace:*",
+    "@nextui-org/radio": "workspace:*",
     "@react-aria/utils": "3.24.1",
     "@react-stately/slider": "3.5.4",
     "@react-aria/visually-hidden": "3.8.12",
