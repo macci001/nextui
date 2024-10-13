@@ -2,4 +2,4 @@
 "@nextui-org/theme": patch
 ---
 
-Making faded variant select's background styling on hover consistent with the input(#3876)
+making select styling to be consistent with the input(#3876)
