@@ -297,7 +297,7 @@ const select = tv({
           "bg-danger-100",
           "text-danger",
           "dark:text-danger-500",
-          "data-[hover=true]:bg-danger-50",
+          "data-[hover=true]:bg-danger-200",
           "group-data-[focus=true]:bg-danger-50",
         ],
         value: "text-danger dark:text-danger-500",
