@@ -1,6 +1,5 @@
 import {forwardRef} from "@nextui-org/system";
 import {useMemo} from "react";
-import {VisuallyHidden} from "@react-aria/visually-hidden";
 import {Radio, RadioGroup} from "@nextui-org/radio";
 
 import {UseRatingProps, useRating} from "./use-rating";
@@ -15,6 +14,7 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
   const {
     Component,
     children,
+    domRef,
     length,
     hasHelper,
     isInvalid,
@@ -24,11 +24,9 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getBaseProps,
     getMainWrapperProps,
     getIconWrapperProps,
-    getInputProps,
     getHelperWrapperProps,
     getDescriptionProps,
     getErrorMessageProps,
-    value,
     ratingValue,
     name,
     onBlur,
@@ -53,9 +51,12 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
           }}
         >
           <Radio
+            ref={domRef}
             className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
             name={name}
             value={"0"}
+            onBlur={onBlur}
+            onChange={onChange}
           />
           {Array.from(Array(length)).map((_, idx) => (
             <RatingSegment key={"segment-" + idx} index={idx} />
@@ -92,22 +93,12 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getErrorMessageProps,
   ]);
 
-  const Input = useMemo(
-    () => (
-      <VisuallyHidden>
-        <input {...getInputProps()} />
-      </VisuallyHidden>
-    ),
-    [value, ratingValue, setRatingValue, getInputProps],
-  );
-
   return (
     <Component {...getBaseProps()}>
       <RatingProvider value={context}>
         <div {...getMainWrapperProps()}>
           {IconList}
           {Helper}
-          {Input}
         </div>
       </RatingProvider>
     </Component>

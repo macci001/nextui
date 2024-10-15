@@ -243,20 +243,6 @@ export function useRating(originalProps: UseRatingProps) {
     [iconWrapperRef, slots, hoverProps, ratingValue, setRatingValue, onMouseMoveIconWrapper],
   );
 
-  const getInputProps: PropGetter = useCallback(
-    (props = {}) => {
-      return {
-        ref: domRef,
-        value: ratingValue.selectedValue == -1 ? null : ratingValue.selectedValue,
-        className: slots.input({class: clsx(classNames?.input)}),
-        type: "number",
-        ...mergeProps(props, otherProps),
-        "data-slot": "input",
-      };
-    },
-    [domRef, ratingValue, slots, originalProps, originalProps.value],
-  );
-
   const getHelperWrapperProps: PropGetter = useCallback(
     (props = {}) => {
       return {
@@ -292,6 +278,7 @@ export function useRating(originalProps: UseRatingProps) {
 
   return {
     Component,
+    domRef,
     children,
     isSingleSelection,
     precision,
@@ -315,7 +302,6 @@ export function useRating(originalProps: UseRatingProps) {
     getBaseProps,
     getMainWrapperProps,
     getIconWrapperProps,
-    getInputProps,
     getHelperWrapperProps,
     getDescriptionProps,
     getErrorMessageProps,

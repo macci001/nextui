@@ -16,6 +16,7 @@ interface RatingSegmentProps {
 const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
   const context = useRatingContext();
   const {
+    domRef,
     ratingValue,
     isRTL,
     isIconWrapperHovered,
@@ -25,6 +26,8 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     classNames,
     isSingleSelection,
     name,
+    onChange,
+    onBlur,
   } = context;
 
   const iconRef = useRef<HTMLElement>(null);
@@ -74,6 +77,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
             <div key={idx} className="col-span-1 inset-0 overflow-hidden bg-green-200xw opacity-0">
               <Radio
                 key={idx}
+                ref={domRef}
                 classNames={{wrapper: "w-[100%] h-[100%]"}}
                 name={name}
                 value={
@@ -81,6 +85,8 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
                     ? (index + 1).toString()
                     : (index + precision + idx * precision).toString()
                 }
+                onBlur={onBlur}
+                onChange={onChange}
               />
             </div>
           );
