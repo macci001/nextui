@@ -24,34 +24,10 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     slots,
     classNames,
     isSingleSelection,
-    setRatingValue,
     name,
   } = context;
 
   const iconRef = useRef<HTMLElement>(null);
-
-  const onPointerUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!iconRef || !iconRef.current) return;
-    if (isSingleSelection) {
-      setRatingValue({selectedValue: index + 1, hoveredValue: ratingValue.hoveredValue});
-
-      return;
-    }
-
-    const clientX = e.clientX;
-    const {x, width} = iconRef.current.getBoundingClientRect();
-    const sweepedWidth = isRTL ? x + width - clientX : clientX - x;
-    const updatedSelectedValue = sweepedWidth / width;
-    let precisedSelectedValue = Math.floor(updatedSelectedValue / precision) * precision;
-
-    if (precisedSelectedValue < updatedSelectedValue)
-      precisedSelectedValue = precisedSelectedValue + precision;
-    if (Math.floor(precisedSelectedValue) > Math.floor(updatedSelectedValue))
-      precisedSelectedValue = Math.floor(precisedSelectedValue);
-
-    precisedSelectedValue += index;
-    //setRatingValue({selectedValue: precisedSelectedValue, hoveredValue: ratingValue.hoveredValue});
-  };
 
   let value = ratingValue.selectedValue;
 
@@ -59,63 +35,52 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     value = ratingValue.hoveredValue;
   }
 
-  const calculateOffset = (
-    value: number,
-    index: number,
-    isSingleSelection: boolean,
-    isRTL: boolean,
-  ) => {
+  const calculateOffsets = (value: number, index: number, isSingleSelection: boolean) => {
     if (isSingleSelection) {
-      return Number(Math.floor(value) - 1 == index);
+      const singleOffset = Number(Math.floor(value) - 1 == index);
+
+      return {offset: singleOffset, offsetRTL: 1 - singleOffset};
     }
 
     if (Math.floor(value) > index) {
-      return Number(!isRTL);
+      return {offset: 1, offsetRTL: 0};
     }
 
     if (Math.floor(value) < index) {
-      return Number(isRTL);
+      return {offset: 0, offsetRTL: 1};
     }
 
-    if (isRTL) {
-      return 1 - (value - Math.floor(value));
-    }
+    const fractionalPart = value - Math.floor(value);
 
-    return value - Math.floor(value);
+    return {offset: fractionalPart, offsetRTL: 1 - fractionalPart};
   };
 
-  const offset = calculateOffset(value, index, isSingleSelection, false);
-  const offsetRTL = calculateOffset(value, index, isSingleSelection, true);
+  const {offset, offsetRTL} = calculateOffsets(value, index, isSingleSelection);
 
   const segmentStyles = slots.iconSegment({class: clsx(classNames?.iconSegment)});
   const {isHovered, hoverProps} = useHover({});
 
   const radioButtons = useMemo(() => {
     const numButtons = Math.floor(1 / precision);
-    const gridClass = `grid grid-cols-${numButtons}`;
+    const gridStyle = {
+      display: "grid",
+      gridTemplateColumns: `repeat(${numButtons}, 1fr)`,
+    };
 
     return (
-      <div className="absolute inset-0 top-0 flex" style={{display: gridClass}}>
+      <div className="absolute inset-0 top-0 flex" style={gridStyle}>
         {Array.from(Array(numButtons)).map((_, idx) => {
-          if (idx === numButtons - 1) {
-            return (
-              <div key={idx} className="col-span-1 inset-0 overflow-hidden opacity-0">
-                <Radio
-                  classNames={{wrapper: "w-[100%] h-[100%]"}}
-                  name={name}
-                  value={(index + 1).toString()}
-                />
-              </div>
-            );
-          }
-
           return (
             <div key={idx} className="col-span-1 inset-0 overflow-hidden bg-green-200xw opacity-0">
               <Radio
                 key={idx}
                 classNames={{wrapper: "w-[100%] h-[100%]"}}
                 name={name}
-                value={(index + precision + idx * precision).toString()}
+                value={
+                  idx === numButtons - 1
+                    ? (index + 1).toString()
+                    : (index + precision + idx * precision).toString()
+                }
               />
             </div>
           );
@@ -130,7 +95,6 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
       className={segmentStyles}
       data-hovered={dataAttr(isHovered)}
       data-slot="segment"
-      onPointerUp={onPointerUp}
       {...hoverProps}
     >
       <RatingIcon fillColor={fillColor} icon={icon} offset={isRTL ? offsetRTL : offset} />
