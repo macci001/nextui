@@ -4,7 +4,7 @@ export const StarIcon = ({...props}: IconSvgProps) => {
   return (
     <svg
       role="img"
-      viewBox="0 0 52 54"
+      viewBox="0 0 48 52"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       {...props}

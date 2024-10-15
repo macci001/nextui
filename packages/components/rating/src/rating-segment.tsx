@@ -1,5 +1,5 @@
 import {mergeRefs} from "@nextui-org/react-utils";
-import {useRef} from "react";
+import {useMemo, useRef} from "react";
 import {clsx, dataAttr} from "@nextui-org/shared-utils";
 import {useHover} from "@react-aria/interactions";
 import {Radio} from "@nextui-org/radio";
@@ -25,9 +25,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     classNames,
     isSingleSelection,
     setRatingValue,
-    onChange,
     name,
-    onBlur,
   } = context;
 
   const iconRef = useRef<HTMLElement>(null);
@@ -52,7 +50,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
       precisedSelectedValue = Math.floor(precisedSelectedValue);
 
     precisedSelectedValue += index;
-    setRatingValue({selectedValue: precisedSelectedValue, hoveredValue: ratingValue.hoveredValue});
+    //setRatingValue({selectedValue: precisedSelectedValue, hoveredValue: ratingValue.hoveredValue});
   };
 
   let value = ratingValue.selectedValue;
@@ -92,6 +90,40 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
   const segmentStyles = slots.iconSegment({class: clsx(classNames?.iconSegment)});
   const {isHovered, hoverProps} = useHover({});
 
+  const radioButtons = useMemo(() => {
+    const numButtons = Math.floor(1 / precision);
+    const gridClass = `grid grid-cols-${numButtons}`;
+
+    return (
+      <div className="absolute inset-0 top-0 flex" style={{display: gridClass}}>
+        {Array.from(Array(numButtons)).map((_, idx) => {
+          if (idx === numButtons - 1) {
+            return (
+              <div key={idx} className="col-span-1 inset-0 overflow-hidden opacity-0">
+                <Radio
+                  classNames={{wrapper: "w-[100%] h-[100%]"}}
+                  name={name}
+                  value={(index + 1).toString()}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <div key={idx} className="col-span-1 inset-0 overflow-hidden bg-green-200xw opacity-0">
+              <Radio
+                key={idx}
+                classNames={{wrapper: "w-[100%] h-[100%]"}}
+                name={name}
+                value={(index + precision + idx * precision).toString()}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }, [precision, name]);
+
   return (
     <div
       ref={mergeRefs(iconRef)}
@@ -102,13 +134,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
       {...hoverProps}
     >
       <RatingIcon fillColor={fillColor} icon={icon} offset={isRTL ? offsetRTL : offset} />
-      <Radio
-        className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
-        name={name}
-        value={index.toString()}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
+      {radioButtons}
     </div>
   );
 };

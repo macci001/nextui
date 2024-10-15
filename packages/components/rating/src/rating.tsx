@@ -1,7 +1,7 @@
 import {forwardRef} from "@nextui-org/system";
 import {useMemo} from "react";
 import {VisuallyHidden} from "@react-aria/visually-hidden";
-import {RadioGroup} from "@nextui-org/radio";
+import {Radio, RadioGroup} from "@nextui-org/radio";
 
 import {UseRatingProps, useRating} from "./use-rating";
 import RatingSegment from "./rating-segment";
@@ -42,7 +42,21 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
 
     return (
       <div {...getIconWrapperProps()}>
-        <RadioGroup name={name} orientation="horizontal" onBlur={onBlur} onChange={onChange}>
+        <RadioGroup
+          name={name}
+          orientation="horizontal"
+          value={ratingValue.selectedValue.toString()}
+          onBlur={onBlur}
+          onChange={onChange}
+          onValueChange={(e) => {
+            setRatingValue({selectedValue: Number(e), hoveredValue: Number(e)});
+          }}
+        >
+          <Radio
+            className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
+            name={name}
+            value={"0"}
+          />
           {Array.from(Array(length)).map((_, idx) => (
             <RatingSegment key={"segment-" + idx} index={idx} />
           ))}
