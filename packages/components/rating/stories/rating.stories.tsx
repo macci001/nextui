@@ -47,7 +47,11 @@ const WithReactHookFormTemplate = (args) => {
     register,
     handleSubmit,
     formState: {errors},
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      rating: 2,
+    },
+  });
 
   const onSubmit = (data: any) => {
     // eslint-disable-next-line no-console
@@ -68,11 +72,11 @@ const WithReactHookFormTemplate = (args) => {
 };
 
 const ControlledTemplate = (args) => {
-  const [value, setValue] = React.useState("0");
+  const [value, setValue] = React.useState("2");
 
   return (
     <div className="w-full flex flex-col gap-2 max-w-[240px]">
-      <Rating {...args} length={5} onValueChange={setValue} />
+      <Rating {...args} length={5} value={value} onValueChange={setValue} />
       <p className="text-default-500 text-tiny">Rating value: {value}</p>
     </div>
   );

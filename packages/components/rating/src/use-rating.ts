@@ -16,6 +16,7 @@ import {useLocale} from "@react-aria/i18n";
 import {StarIcon} from "@nextui-org/shared-icons";
 import {AriaTextFieldProps} from "@react-types/textfield";
 import {useControlledState} from "@react-stately/utils";
+import {useSafeLayoutEffect} from "@nextui-org/use-safe-layout-effect";
 
 export type RatingValueType = {
   hoveredValue: number;
@@ -172,6 +173,17 @@ export function useRating(originalProps: UseRatingProps) {
     handleValueChange,
   );
 
+  // if we use `react-hook-form`, it will set the input value using the ref in register
+  // i.e. setting ref.current.value to something which is uncontrolled
+  // hence, sync the state with `ref.current.value`
+  useSafeLayoutEffect(() => {
+    if (!domRef.current) return;
+    setRatingValue({
+      hoveredValue: Number(domRef.current.value),
+      selectedValue: Number(domRef.current.value),
+    });
+  }, [domRef.current]);
+
   const description = props.description;
   const isInvalid = props.isInvalid ?? false;
   const errorMessage = props.errorMessage;
@@ -254,6 +266,20 @@ export function useRating(originalProps: UseRatingProps) {
     [slots],
   );
 
+  const getInputProps: PropGetter = useCallback(
+    (props = {}) => {
+      return {
+        ref: domRef,
+        value: ratingValue.selectedValue == -1 ? null : ratingValue.selectedValue,
+        className: slots.input({class: clsx(classNames?.input)}),
+        type: "number",
+        ...mergeProps(props, otherProps),
+        "data-slot": "input",
+      };
+    },
+    [domRef, ratingValue, slots, originalProps, originalProps.value],
+  );
+
   const getDescriptionProps: PropGetter = useCallback(
     (props = {}) => {
       return {
@@ -303,6 +329,7 @@ export function useRating(originalProps: UseRatingProps) {
     getMainWrapperProps,
     getIconWrapperProps,
     getHelperWrapperProps,
+    getInputProps,
     getDescriptionProps,
     getErrorMessageProps,
     ...otherProps,

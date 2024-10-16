@@ -82,8 +82,8 @@ describe("Rating with React Hook Form", () => {
 
   it("should work with defaultValues", () => {
     expect(rating1).toHaveValue(2);
-    expect(rating2).toHaveValue(null);
-    expect(rating3).toHaveValue(null);
+    expect(rating2).toHaveValue(0);
+    expect(rating3).toHaveValue(0);
   });
 
   it("should not submit form when required field is empty", async () => {

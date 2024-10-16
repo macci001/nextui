@@ -9,6 +9,7 @@ const rating = tv({
     iconWrapper: "inline-flex gap-x-2",
     iconSegment: ["relative"],
     icon: [],
+    input: [],
     helperWrapper: [],
     description: ["text-tiny", "text-foreground-400"],
     errorMessage: ["text-tiny", "text-red-400"],

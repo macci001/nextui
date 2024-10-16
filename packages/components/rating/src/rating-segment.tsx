@@ -16,7 +16,6 @@ interface RatingSegmentProps {
 const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
   const context = useRatingContext();
   const {
-    domRef,
     ratingValue,
     isRTL,
     isIconWrapperHovered,
@@ -74,11 +73,10 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
       <div className="absolute inset-0 top-0 flex" style={gridStyle}>
         {Array.from(Array(numButtons)).map((_, idx) => {
           return (
-            <div key={idx} className="col-span-1 inset-0 overflow-hidden bg-green-200xw opacity-0">
+            <div key={idx} className="col-span-1 inset-0 overflow-hidden opacity-0">
               <Radio
                 key={idx}
-                ref={domRef}
-                classNames={{wrapper: "w-[100%] h-[100%]"}}
+                classNames={{base: "w-full h-full m-0"}}
                 name={name}
                 value={
                   idx === numButtons - 1

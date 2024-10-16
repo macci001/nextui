@@ -1,6 +1,7 @@
 import {forwardRef} from "@nextui-org/system";
 import {useMemo} from "react";
 import {Radio, RadioGroup} from "@nextui-org/radio";
+import {VisuallyHidden} from "@react-aria/visually-hidden";
 
 import {UseRatingProps, useRating} from "./use-rating";
 import RatingSegment from "./rating-segment";
@@ -14,7 +15,6 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
   const {
     Component,
     children,
-    domRef,
     length,
     hasHelper,
     isInvalid,
@@ -25,9 +25,11 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getMainWrapperProps,
     getIconWrapperProps,
     getHelperWrapperProps,
+    getInputProps,
     getDescriptionProps,
     getErrorMessageProps,
     ratingValue,
+    value,
     name,
     onBlur,
     onChange,
@@ -41,6 +43,8 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     return (
       <div {...getIconWrapperProps()}>
         <RadioGroup
+          data-selected-value={ratingValue.selectedValue.toString()}
+          data-slot="radio-group"
           name={name}
           orientation="horizontal"
           value={ratingValue.selectedValue.toString()}
@@ -51,8 +55,8 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
           }}
         >
           <Radio
-            ref={domRef}
             className={`absolute top-0 inset-0 opacity-0 cursor-pointer`}
+            data-slot="radio"
             name={name}
             value={"0"}
             onBlur={onBlur}
@@ -93,12 +97,22 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getErrorMessageProps,
   ]);
 
+  const Input = useMemo(
+    () => (
+      <VisuallyHidden>
+        <input {...getInputProps()} />
+      </VisuallyHidden>
+    ),
+    [value, ratingValue, setRatingValue, getInputProps],
+  );
+
   return (
     <Component {...getBaseProps()}>
       <RatingProvider value={context}>
         <div {...getMainWrapperProps()}>
           {IconList}
           {Helper}
+          {Input}
         </div>
       </RatingProvider>
     </Component>
