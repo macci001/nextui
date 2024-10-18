@@ -6,7 +6,7 @@ const rating = tv({
   slots: {
     base: "flex flex-col w-fit cursor-pointer",
     mainWrapper: "relative",
-    iconWrapper: "inline-flex gap-x-2",
+    iconWrapper: "inline-flex gap-x-0",
     iconSegment: ["relative"],
     icon: [],
     input: [],

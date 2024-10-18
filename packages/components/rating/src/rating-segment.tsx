@@ -1,4 +1,4 @@
-import {useMemo, useRef} from "react";
+import {useMemo} from "react";
 import {clsx, dataAttr} from "@nextui-org/shared-utils";
 import {useHover} from "@react-aria/interactions";
 import {Radio} from "@nextui-org/radio";
@@ -27,8 +27,6 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     onChange,
     onBlur,
   } = context;
-
-  const iconRef = useRef<HTMLDivElement>(null);
 
   let value = ratingValue.selectedValue;
 
@@ -101,7 +99,6 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
 
   return (
     <div
-      ref={iconRef}
       className={segmentStyles}
       data-hovered={dataAttr(isHovered)}
       data-slot="segment"

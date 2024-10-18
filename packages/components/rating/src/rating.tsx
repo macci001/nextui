@@ -17,17 +17,9 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     Component,
     children,
     length,
-    isInvalid,
-    isRequired,
     ratingValue,
-    defaultValue,
     value,
     name,
-    description,
-    errorMessage,
-    classNames,
-    slots,
-    validationBehavior,
     icon = <StarIcon />,
     onChange,
     onBlur,
@@ -36,67 +28,29 @@ const Rating = forwardRef<"div", RatingProps>((props, ref) => {
     getMainWrapperProps,
     getIconWrapperProps,
     getInputProps,
-    validate,
+    getRadioGroupProps,
   } = context;
 
   const IconList = useMemo(() => {
     return (
-      <div {...getIconWrapperProps()}>
-        <RadioGroup
-          classNames={{
-            errorMessage: slots.errorMessage({class: classNames?.errorMessage}),
-            description: slots.description({class: classNames?.description}),
-          }}
-          data-slot="radio-group"
-          defaultValue={defaultValue}
-          description={description}
-          errorMessage={errorMessage}
-          isInvalid={isInvalid}
-          isRequired={isRequired}
+      <RadioGroup {...getRadioGroupProps()}>
+        <Radio
+          className={"absolute inset-0 top-0 opacity-0"}
+          data-slot="radio"
           name={name}
-          orientation="horizontal"
-          validate={validate}
-          validationBehavior={validationBehavior}
-          value={ratingValue.selectedValue != -1 ? ratingValue.selectedValue.toString() : null}
+          value={"0"}
+          onBlur={onBlur}
           onChange={onChange}
-          onValueChange={(e) => {
-            setRatingValue({selectedValue: Number(e), hoveredValue: Number(e)});
-          }}
-        >
-          <Radio
-            className={"absolute inset-0 top-0 opacity-0"}
-            data-slot="radio"
-            name={name}
-            value={"0"}
-            onBlur={onBlur}
-            onChange={onChange}
-          />
+        />
+        <div {...getIconWrapperProps()}>
           {children ??
             Array.from(Array(length)).map((_, idx) => (
               <RatingSegment key={"segment-" + idx} icon={icon} index={idx} />
             ))}
-        </RadioGroup>
-      </div>
+        </div>
+      </RadioGroup>
     );
-  }, [
-    children,
-    length,
-    getIconWrapperProps,
-    name,
-    defaultValue,
-    ratingValue,
-    setRatingValue,
-    isInvalid,
-    isRequired,
-    description,
-    errorMessage,
-    slots,
-    classNames,
-    validationBehavior,
-    onBlur,
-    onChange,
-    validate,
-  ]);
+  }, [name, children, length, icon, onBlur, onChange, getIconWrapperProps, getRadioGroupProps]);
 
   const Input = useMemo(
     () => (

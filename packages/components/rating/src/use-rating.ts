@@ -16,6 +16,7 @@ import {useLocale} from "@react-aria/i18n";
 import {AriaTextFieldProps} from "@react-types/textfield";
 import {useControlledState} from "@react-stately/utils";
 import {useSafeLayoutEffect} from "@nextui-org/use-safe-layout-effect";
+import {RadioGroupProps} from "@nextui-org/radio";
 
 export type RatingValueType = {
   hoveredValue: number;
@@ -87,6 +88,9 @@ interface Props extends HTMLNextUIProps<"div"> {
    *    iconWrapper: "icon-wrapper-classes",
    *    iconSegement: "icon-segment-classes",
    *    icon: "icon-classes",
+   *    input: "input-classes",
+   *    radioButtonsWrapper: "radio-buttons-wrapper-classes",
+   *    radioButtonWrapper: "radio-button-wrapper-classes",
    *    description: "description-classes",
    *    errorMessage: "error-message-classes",
    * }} />
@@ -208,6 +212,7 @@ export function useRating(originalProps: UseRatingProps) {
 
     return props.validate(value);
   };
+
   const isInvalid = props.isInvalid;
 
   const {hoverProps, isHovered: isIconWrapperHovered} = useHover({isDisabled});
@@ -290,6 +295,32 @@ export function useRating(originalProps: UseRatingProps) {
     [domRef, ratingValue, slots, originalProps, originalProps.value],
   );
 
+  const getRadioGroupProps = (props = {}) => {
+    return {
+      name,
+      orientation: "horizontal",
+      defaultValue,
+      description,
+      errorMessage,
+      isInvalid,
+      isRequired,
+      validationBehavior,
+      value: ratingValue.selectedValue != -1 ? ratingValue.selectedValue.toString() : null,
+      classNames: {
+        wrapper: "gap-0.5",
+        errorMessage: slots.errorMessage({class: classNames?.errorMessage}),
+        description: slots.description({class: classNames?.description}),
+      },
+      validate,
+      onChange,
+      onValueChange: (e) => {
+        setRatingValue({selectedValue: Number(e), hoveredValue: Number(e)});
+      },
+      ...props,
+      "data-slot": "radiogroup",
+    } as RadioGroupProps;
+  };
+
   return {
     Component,
     domRef,
@@ -321,6 +352,7 @@ export function useRating(originalProps: UseRatingProps) {
     getMainWrapperProps,
     getIconWrapperProps,
     getInputProps,
+    getRadioGroupProps,
     onChange,
     onBlur,
     validate,
