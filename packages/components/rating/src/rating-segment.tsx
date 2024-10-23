@@ -26,6 +26,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
     name,
     onChange,
     onBlur,
+    setRatingValue,
   } = context;
 
   let value = ratingValue.selectedValue;
@@ -72,21 +73,26 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
         style={gridStyle}
       >
         {Array.from(Array(numButtons)).map((_, idx) => {
+          const radioButtonValue =
+            idx === numButtons - 1 ? index + 1 : index + precision + idx * precision;
+
           return (
             <div
               key={idx}
               className={slots.radioButtonWrapper({class: classNames?.radioButtonWrapper})}
+              onMouseMove={() => {
+                setRatingValue({
+                  hoveredValue: radioButtonValue,
+                  selectedValue: ratingValue.selectedValue,
+                });
+              }}
             >
               <Radio
                 key={idx}
                 classNames={{base: "w-full h-full m-0"}}
                 data-slot="radio"
                 name={name}
-                value={
-                  idx === numButtons - 1
-                    ? (index + 1).toString()
-                    : (index + precision + idx * precision).toString()
-                }
+                value={radioButtonValue.toString()}
                 onBlur={onBlur}
                 onChange={onChange}
               />
@@ -95,7 +101,7 @@ const RatingSegment = ({index, icon, fillColor}: RatingSegmentProps) => {
         })}
       </div>
     );
-  }, [precision, name]);
+  }, [precision, name, ratingValue, setRatingValue]);
 
   return (
     <div

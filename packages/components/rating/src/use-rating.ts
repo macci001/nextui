@@ -218,25 +218,6 @@ export function useRating(originalProps: UseRatingProps) {
   const {hoverProps, isHovered: isIconWrapperHovered} = useHover({isDisabled});
   const shouldConsiderHover = Math.abs(Math.floor(1 / precision) - 1 / precision) < Number.EPSILON;
 
-  const onMouseMoveIconWrapper = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!iconWrapperRef || !iconWrapperRef.current || !shouldConsiderHover) return;
-
-    let precisionValue = precision;
-
-    if (isSingleSelection) precisionValue = 1;
-
-    const clientX = e.clientX;
-    const {x, width} = iconWrapperRef.current.getBoundingClientRect();
-    const sweepedWidth = isRTL ? x + width - clientX : clientX - x;
-    const updatedHoverValue = (sweepedWidth / width) * length;
-    let precisedHoverValue = Math.floor(updatedHoverValue / precisionValue) * precisionValue;
-
-    if (precisedHoverValue < updatedHoverValue)
-      precisedHoverValue = precisedHoverValue + precisionValue;
-    if (precisedHoverValue > length) precisedHoverValue = length;
-    setRatingValue({hoveredValue: precisedHoverValue, selectedValue: ratingValue.selectedValue});
-  };
-
   const baseStyles = clsx(classNames?.base, className);
   const getBaseProps: PropGetter = useCallback(
     (props = {}) => {
@@ -270,14 +251,13 @@ export function useRating(originalProps: UseRatingProps) {
     (props = {}) => {
       return {
         ref: iconWrapperRef,
-        onMouseMove: onMouseMoveIconWrapper,
         className: slots.iconWrapper({class: clsx(classNames?.iconWrapper)}),
         ...mergeProps(props, hoverProps),
         "data-slot": "icon-wrapper",
         "data-hover": dataAttr(isIconWrapperHovered),
       };
     },
-    [iconWrapperRef, slots, hoverProps, ratingValue, setRatingValue, onMouseMoveIconWrapper],
+    [iconWrapperRef, slots, hoverProps, ratingValue, setRatingValue],
   );
 
   const getInputProps: PropGetter = useCallback(
@@ -307,7 +287,6 @@ export function useRating(originalProps: UseRatingProps) {
       validationBehavior,
       value: ratingValue.selectedValue != -1 ? ratingValue.selectedValue.toString() : null,
       classNames: {
-        wrapper: "gap-0.5",
         errorMessage: slots.errorMessage({class: classNames?.errorMessage}),
         description: slots.description({class: classNames?.description}),
       },
