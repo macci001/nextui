@@ -1,12 +1,4 @@
-const App = `import {InputOtp} from "@nextui-org/react";
-
-export default function App() {
-  return (
-    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-      <InputOtp type="password" />
-    </div>
-  );
-}`;
+import App from "./password.raw.jsx?raw";
 
 const react = {
   "/App.jsx": App,

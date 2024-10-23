@@ -7,8 +7,8 @@ import colors from "./colors";
 import variants from "./variants";
 import radius from "./radius";
 import description from "./description";
-import errorMessage from "./errorMessage";
-import allowedKeys from "./allowedKeys";
+import errorMessage from "./error-message";
+import allowedKeys from "./allowed-keys";
 import controlled from "./controlled";
 import password from "./password";
 
